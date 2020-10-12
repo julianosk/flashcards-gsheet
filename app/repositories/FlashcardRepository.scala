@@ -1,5 +1,6 @@
 package repositories
 
+import gsheets.GSheetsClient
 import javax.inject.{Inject, Singleton}
 import models.Flashcard
 
@@ -10,7 +11,7 @@ trait FlashcardRepository {
 }
 
 @Singleton
-class FlashcardRepositoryImpl @Inject ()()(implicit ec: ExecutionContext)
+class FlashcardRepositoryImpl @Inject ()(gSheetsClient: GSheetsClient)(implicit ec: ExecutionContext)
   extends FlashcardRepository {
 
   private val flashcards = Seq(
@@ -19,6 +20,7 @@ class FlashcardRepositoryImpl @Inject ()()(implicit ec: ExecutionContext)
   )
 
   override def findAll(): Future[Iterable[Flashcard]] = Future {
+    gSheetsClient.findAll()
     flashcards
   }
 

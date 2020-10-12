@@ -1,4 +1,5 @@
 import com.google.inject.AbstractModule
+import gsheets.{GSheetsClient, GSheetsClientImpl}
 import repositories.{FlashcardRepository, FlashcardRepositoryImpl}
 
 /**
@@ -15,6 +16,7 @@ class Module extends AbstractModule {
 
   override def configure() = {
     bind(classOf[FlashcardRepository]).to(classOf[FlashcardRepositoryImpl])
+    bind(classOf[GSheetsClient]).to(classOf[GSheetsClientImpl])
   }
 
 }
