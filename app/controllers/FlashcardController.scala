@@ -22,4 +22,10 @@ class FlashcardController @Inject()(cc: ControllerComponents,
     }
   }
 
+  def next(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    repository.next map { items =>
+      Ok(Json.toJson(items))
+    }
+  }
+
 }

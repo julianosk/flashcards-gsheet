@@ -1,6 +1,8 @@
 package gsheets
 
 import java.io.{File, FileNotFoundException, InputStreamReader}
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util
 import java.util.Collections
 
@@ -17,16 +19,17 @@ import javax.inject.{Inject, Singleton}
 import models.Flashcard
 import play.api.{Configuration, Environment}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.collection.convert.ImplicitConversions.`collection AsScalaIterable`
+import scala.concurrent.ExecutionContext
 
 trait GSheetsClient {
-  def findAll(): Future[Iterable[Flashcard]]
+  def findAll(): List[Flashcard]
 }
 
 @Singleton
 class GSheetsClientImpl @Inject()(env: Environment,
-                              config: Configuration
-                             )(implicit ec: ExecutionContext)
+                                  config: Configuration
+                                 )(implicit ec: ExecutionContext)
   extends GSheetsClient {
   private val JSON_FACTORY = JacksonFactory.getDefaultInstance
   private val SCOPES: util.List[String] = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY)
@@ -38,15 +41,21 @@ class GSheetsClientImpl @Inject()(env: Environment,
   private val receiver = new LocalServerReceiver.Builder().setPort(8888).build
   private val credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
   val service: Sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(config.get[String]("gsheets.app-name")).build
-  val range = "A1:A2"
+  val range = "Sheet1"
 
-  override def findAll(): Future[Iterable[Flashcard]] = {
-
-    val response: ValueRange = service.spreadsheets.values.get(config.get[String]("gsheets.spreadsheet-id"), range).execute
-    val values = response.getValues
-    Future {
-      List[Flashcard]()
-    }
-
+  override def findAll(): List[Flashcard] = {
+    service.spreadsheets.values.get(config.get[String]("gsheets.spreadsheet-id"), range).execute
+      .getValues
+      .drop(1) // remove table header
+      .map {
+        line =>
+          new Flashcard(
+            line.get(0).toString,
+            line.get(1).toString,
+            line.get(2).toString,
+            line.get(3).toString.toInt,
+            LocalDate.parse(line.get(4).toString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+          )
+      }.toList
   }
 }

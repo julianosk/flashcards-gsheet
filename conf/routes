@@ -1,3 +1,4 @@
 
 #  API controllers mapping
-GET        /api/flashcards        controllers.FlashcardController.findAll()
+GET        /api/flashcards             controllers.FlashcardController.findAll()
+GET        /api/flashcards/next        controllers.FlashcardController.next()

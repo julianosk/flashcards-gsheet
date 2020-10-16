@@ -7,21 +7,22 @@ import models.Flashcard
 import scala.concurrent.{ExecutionContext, Future}
 
 trait FlashcardRepository {
-  def findAll(): Future[Iterable[Flashcard]]
+  def findAll(): Future[List[Flashcard]]
+  def next(): Future[List[Flashcard]]
 }
 
 @Singleton
 class FlashcardRepositoryImpl @Inject ()(gSheetsClient: GSheetsClient)(implicit ec: ExecutionContext)
   extends FlashcardRepository {
 
-  private val flashcards = Seq(
-    Flashcard("word1", "translation1"),
-    Flashcard("word2", "translation2"),
-  )
-
-  override def findAll(): Future[Iterable[Flashcard]] = Future {
+  override def findAll(): Future[List[Flashcard]] = Future {
     gSheetsClient.findAll()
-    flashcards
   }
 
+  override def next(): Future[List[Flashcard]] = Future {
+    gSheetsClient.findAll()
+      .sortBy(_.last_seen)(Ordering.by(_.toEpochDay))
+      .sortBy(_.level)
+      .take(10)
+  }
 }

@@ -2,3 +2,8 @@ GET http://localhost:9000/api/flashcards
 Accept: application/json
 
 ###
+
+GET http://localhost:9000/api/flashcards/next
+Accept: application/json
+
+###
