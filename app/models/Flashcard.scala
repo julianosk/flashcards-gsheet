@@ -6,6 +6,7 @@ import play.api.libs.json.{Json, OFormat}
 
 
 case class Flashcard(
+                      row: Int,
                       word: String,
                       translation: String,
                       example: String,

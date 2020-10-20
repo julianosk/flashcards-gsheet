@@ -1,4 +1,5 @@
 
 #  API controllers mapping
-GET        /api/flashcards             controllers.FlashcardController.findAll()
-GET        /api/flashcards/next        controllers.FlashcardController.next()
+GET          /api/flashcards                  controllers.FlashcardController.findAll()
+GET          /api/flashcards/next             controllers.FlashcardController.next()
+PATCH        /api/flashcards/:row/view        controllers.FlashcardController.view(row: Int)

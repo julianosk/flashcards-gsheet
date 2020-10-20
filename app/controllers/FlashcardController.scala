@@ -28,4 +28,10 @@ class FlashcardController @Inject()(cc: ControllerComponents,
     }
   }
 
+  def view(row: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    repository.view(row) map { value =>
+      Ok(Json.toJson(value))
+    }
+  }
+
 }

@@ -3,7 +3,6 @@ package gsheets
 import java.io.{File, FileNotFoundException, InputStreamReader}
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util
 import java.util.Collections
 
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
@@ -19,11 +18,13 @@ import javax.inject.{Inject, Singleton}
 import models.Flashcard
 import play.api.{Configuration, Environment}
 
-import scala.collection.convert.ImplicitConversions.`collection AsScalaIterable`
+import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 
 trait GSheetsClient {
-  def findAll(): List[Flashcard]
+  def getAll(): List[Flashcard]
+
+  def updateLastSeenCell(row: Int): Boolean
 }
 
 @Singleton
@@ -31,31 +32,56 @@ class GSheetsClientImpl @Inject()(env: Environment,
                                   config: Configuration
                                  )(implicit ec: ExecutionContext)
   extends GSheetsClient {
-  private val JSON_FACTORY = JacksonFactory.getDefaultInstance
-  private val SCOPES: util.List[String] = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY)
-  private val HTTP_TRANSPORT: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport
-  private val credentialsFile = env.classLoader.getResourceAsStream("credentials.json")
-  if (credentialsFile == null) throw new FileNotFoundException("Credentials file not found.")
-  private val clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(credentialsFile))
-  private val flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(new FileDataStoreFactory(new File("tokens"))).setAccessType("offline").build
-  private val receiver = new LocalServerReceiver.Builder().setPort(8888).build
-  private val credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
-  val service: Sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(config.get[String]("gsheets.app-name")).build
-  val range = "Sheet1"
 
-  override def findAll(): List[Flashcard] = {
-    service.spreadsheets.values.get(config.get[String]("gsheets.spreadsheet-id"), range).execute
+  val spreadsheetId: String = config.get[String]("gsheets.spreadsheet-id")
+  val spreadsheets: Sheets#Spreadsheets = createSpreadsheetClient
+  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+  override def getAll(): List[Flashcard] = {
+    spreadsheets.values.get(spreadsheetId, "Sheet1").execute
       .getValues
+      .asScala
       .drop(1) // remove table header
+      .zipWithIndex
       .map {
-        line =>
+        case (row, rowNumber) =>
           new Flashcard(
-            line.get(0).toString,
-            line.get(1).toString,
-            line.get(2).toString,
-            line.get(3).toString.toInt,
-            LocalDate.parse(line.get(4).toString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            rowNumber + 2, // first row is the header!
+            row.get(0).toString,
+            row.get(1).toString,
+            row.get(2).toString,
+            row.get(3).toString.toInt,
+            LocalDate.parse(row.get(4).toString, dateTimeFormatter)
           )
       }.toList
+  }
+
+  override def updateLastSeenCell(row: Int): Boolean = {
+    val valueRange = new ValueRange().setValues(List(
+      List[Object](dateTimeFormatter.format(LocalDate.now())
+      ).asJava
+    ).asJava)
+    spreadsheets.values.update(spreadsheetId, s"E${row}:E${row}", valueRange)
+      .setValueInputOption("USER_ENTERED")
+      .execute().getUpdatedCells.equals(1)
+  }
+
+  private def createSpreadsheetClient = {
+    val JSON_FACTORY = JacksonFactory.getDefaultInstance
+    val HTTP_TRANSPORT: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport
+    val credentialsFile = env.classLoader.getResourceAsStream("credentials.json")
+    if (credentialsFile == null) throw new FileNotFoundException("Credentials file not found.")
+    val credential = new AuthorizationCodeInstalledApp(
+      new GoogleAuthorizationCodeFlow.Builder(
+        HTTP_TRANSPORT,
+        JSON_FACTORY,
+        GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(credentialsFile)),
+        Collections.singletonList(SheetsScopes.SPREADSHEETS)
+      ).setDataStoreFactory(new FileDataStoreFactory(new File("tokens"))).setAccessType("offline").build,
+      new LocalServerReceiver.Builder().setPort(8888).build)
+      .authorize("user")
+    new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+      .setApplicationName(config.get[String]("gsheets.app-name")).build
+      .spreadsheets()
   }
 }
