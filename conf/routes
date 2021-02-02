@@ -1,11 +1,11 @@
 #  API controllers mapping
 
 ## get
-GET          /api/flashcards                  controllers.FlashcardController.findAll()
+GET         /api/flashcards                    controllers.FlashcardController.findAll()
 
 # Next flashcards => /api/flashcards/next?limit=20
-GET          /api/flashcards/next             controllers.FlashcardController.next(limit: Int ?= 10)
+GET         /api/flashcards/next               controllers.FlashcardController.next(limit: Int ?= 10)
 
-GET          /api/flashcards/:row             controllers.FlashcardController.get(row: Int)
+GET         /api/flashcards/:row               controllers.FlashcardController.get(row: Int)
 
-POST        /api/flashcards/:row/view        controllers.FlashcardController.review(row: Int)
+POST        /api/flashcards/:row/review        controllers.FlashcardController.review(row: Int)

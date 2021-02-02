@@ -8,8 +8,13 @@ Accept: application/json
 
 ###
 
-POST http://localhost:9000/api/flashcards/3/view
+POST http://localhost:9000/api/flashcards/15/review
 Accept: application/json
+Content-Type: application/json
+
+{
+  "level": 1
+}
 
 ###
 

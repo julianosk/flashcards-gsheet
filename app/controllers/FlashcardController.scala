@@ -1,7 +1,8 @@
 package controllers
 
-import controllers.ReviewForm.Data
 import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.FlashcardService
@@ -15,7 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FlashcardController @Inject()(cc: ControllerComponents,
                                     service: FlashcardService)
                                    (implicit ec: ExecutionContext)
-  extends AbstractController(cc) {
+  extends AbstractController(cc) with I18nSupport {
 
   def findAll(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     service.next() map { items =>
@@ -36,27 +37,31 @@ class FlashcardController @Inject()(cc: ControllerComponents,
   }
 
   def review(row: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    import ReviewForm.Data
     ReviewForm.form.bindFromRequest().fold(
-      { _ => Future.successful(BadRequest) }, { data: Data =>
+      { form: Form[Data] =>
+        Future.successful(BadRequest(form.errorsAsJson))
+      },
+      { data: Data =>
         service.review(row, data.level).map {
-          case true => Ok
-          case false => BadRequest
+          case true => Ok(s"Flashcard on row '$row' reviewed.")
+          case false => BadRequest(s"Failed to review flashcard on row '$row'.")
         }
       })
   }
 
-}
+  object ReviewForm {
 
-object ReviewForm {
+    import play.api.data.Form
+    import play.api.data.Forms._
 
-  import play.api.data.Form
-  import play.api.data.Forms._
+    case class Data(level: Int)
 
-  case class Data(level: Int)
+    val form: Form[Data] = Form(
+      mapping(
+        "level" -> number()
+      )(Data.apply)(Data.unapply)
+    )
 
-  val form: Form[Data] = Form(
-    mapping(
-      "level" -> number()
-    )(Data.apply)(Data.unapply)
-  )
+  }
 }

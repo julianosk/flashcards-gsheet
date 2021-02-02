@@ -15,7 +15,7 @@ trait FlashcardRepository {
 
   def findByRow(row: Int): Flashcard
 
-  def review(row: Int): Boolean
+  def review(row: Int, level: Integer): Boolean
 }
 
 @Singleton
@@ -57,12 +57,12 @@ class FlashcardRepositoryImpl @Inject()(gSheetsClient: GSheetsClient)(implicit e
     LocalDate.parse(value, dateTimeFormatter)
   }
 
-  override def review(row: Int): Boolean = {
+  override def review(row: Int, level: Integer): Boolean = {
     val values = List(
-      List[Object](dateTimeFormatter.format(LocalDate.now())
+      List[Object](level, dateTimeFormatter.format(LocalDate.now())
       ).asJava
     ).asJava
-    gSheetsClient.updateCells(range = s"E${row}:E${row}", values).equals(1)
+    gSheetsClient.updateCells(range = s"D${row}:E${row}", values).equals(2)
   }
 
 }

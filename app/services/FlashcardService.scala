@@ -21,8 +21,8 @@ class FlashcardService @Inject()(repository: FlashcardRepository)(implicit ec: E
     repository.findByRow(row)
   }
 
-  def review(row: Int, answer: Int): Future[Boolean] = Future {
-    repository.review(row)
+  def review(row: Int, level: Int): Future[Boolean] = Future {
+    repository.review(row, level)
   }
 
 }
