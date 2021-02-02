@@ -8,7 +8,12 @@ Accept: application/json
 
 ###
 
-PATCH http://localhost:9000/api/flashcards/3/view
+POST http://localhost:9000/api/flashcards/3/view
+Accept: application/json
+
+###
+
+GET http://localhost:9000/api/flashcards/15
 Accept: application/json
 
 ###
