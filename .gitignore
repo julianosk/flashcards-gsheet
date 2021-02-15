@@ -16,3 +16,4 @@ dist
 credentials.json
 conf/application.doc.conf
 tokens
+PRIVATE.md
