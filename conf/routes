@@ -1,6 +1,5 @@
 #  API controllers mapping
 
-## get
 GET         /api/flashcards                    controllers.FlashcardController.findAll()
 
 # Next flashcards => /api/flashcards/next?limit=20
@@ -9,3 +8,11 @@ GET         /api/flashcards/next               controllers.FlashcardController.n
 GET         /api/flashcards/:row               controllers.FlashcardController.get(row: Int)
 
 POST        /api/flashcards/:row/review        controllers.FlashcardController.review(row: Int)
+
+# Frontend
+
+## Serve index page from public directory
+GET     /                           controllers.FrontendController.index()
+
+# Serve static assets under public directory
+GET     /*file                      controllers.FrontendController.assetOrDefault(file)
