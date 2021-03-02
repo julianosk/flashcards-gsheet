@@ -1,13 +1,17 @@
 import { typedAction } from "../helpers";
 
+// Actions
+const LOGIN = "user/LOGIN";
+const LOGOUT = "user/LOGOUT";
+
 const initialState: UserState = { username: null };
 
 export const login = (username: string) => {
-    return typedAction("user/LOGIN", username);
+    return typedAction(LOGIN, username);
 };
 
 export const logout = () => {
-    return typedAction("user/LOGOUT");
+    return typedAction(LOGOUT);
 };
 
 type UserAction = ReturnType<typeof login | typeof logout>;
@@ -17,9 +21,9 @@ export function userReducer(
     action: UserAction
 ): UserState {
     switch (action.type) {
-        case "user/LOGIN":
+        case LOGIN:
             return { username: action.payload };
-        case "user/LOGOUT":
+        case LOGOUT:
             return { username: null };
         default:
             return state;
