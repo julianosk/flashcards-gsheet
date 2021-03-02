@@ -20,7 +20,26 @@ export function loadFlashcards() {
     return (dispatch: Dispatch, getState: () => RootState) => {
         setTimeout(() => {
             dispatch(
-                setFlashcards([...getState().flashcards.flashcards])
+                setFlashcards([
+                    {
+                        row: 1,
+                        word: "word1",
+                        example: "Example",
+                        level: 2,
+                        reviewed: false,
+                        last_seen: new Date(),
+                        translation: "Translation",
+                    },
+                    {
+                        row: 2,
+                        word: "word2",
+                        example: "Example2",
+                        level: 1,
+                        reviewed: false,
+                        last_seen: new Date(),
+                        translation: "Translation2",
+                    }
+                ])
             );
         }, 500);
     };
@@ -39,7 +58,7 @@ export function flashcardsReducer(
             return {
                 ...state, flashcards: state.flashcards.map(flashcard => {
                     if (flashcard.row === action.payload.row) {
-                        return { ...flashcard, level: action.payload.newLevel };
+                        return { ...flashcard, level: action.payload.newLevel, reviewed: true };
                     }
                     return flashcard;
                 })
