@@ -2,7 +2,8 @@ import { RootState } from "../../../redux";
 import { login } from "../../../redux/modules/user"
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Button, Container, Typography, CssBaseline, makeStyles } from "@material-ui/core";
+import { Button, Container, Typography, CssBaseline, makeStyles, Avatar } from "@material-ui/core";
+import TranslateOutlinedIcon from '@material-ui/icons/TranslateOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from "@material-ui/core/TextField";
 
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -45,6 +46,9 @@ export function Login() {
     <Container component="main" maxWidth="xs">
       <CssBaseline/>
       <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <TranslateOutlinedIcon />
+        </Avatar>
         <Typography component="h1" variant="h5">
           Flashcards GSheets
         </Typography>
