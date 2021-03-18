@@ -1,11 +1,11 @@
 import { RootState } from "../../../redux";
 import { login } from "../../../redux/modules/user"
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
 import { Button, Container, Typography, CssBaseline, makeStyles, Avatar } from "@material-ui/core";
 import TranslateOutlinedIcon from '@material-ui/icons/TranslateOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from "@material-ui/core/TextField";
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function Login() {
+  const history = useHistory();
   const username = useSelector((state: RootState) => state.user.username);
   const dispatch = useDispatch();
   const [inputUsername, setInputUsername] = useState("");
@@ -39,7 +40,7 @@ export function Login() {
   };
 
   if (username !== null) {
-    return <Redirect to="/"/>;
+    history.push("/flashcards")
   }
 
   return (

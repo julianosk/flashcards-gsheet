@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import './App.css';
 import { Login } from "./components/main/auth/Login";
 import { createBrowserHistory } from "history";
@@ -10,10 +10,13 @@ const history = createBrowserHistory();
 function App() {
   return (
     <Router history={history}>
-      <div>
-        <Route path="/" exact component={Flashcards}/>
+      <Switch>
+        <Route path="/" exact>
+          Home
+        </Route>
+        <Route path="/flashcards" component={Flashcards}/>
         <Route path="/login" component={Login}/>
-      </div>
+      </Switch>
     </Router>
   );
 }
