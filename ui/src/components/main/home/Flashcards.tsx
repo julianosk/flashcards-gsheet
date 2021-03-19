@@ -1,4 +1,4 @@
-import { Container, CssBaseline, Divider, Paper, makeStyles } from "@material-ui/core";
+import { Container, CssBaseline, Divider, Paper, makeStyles, Box } from "@material-ui/core";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   },
+  content: {
+    textAlign: 'center',
+    padding: theme.spacing(3),
+  }
 }));
 
 export function Flashcards() {
@@ -31,9 +35,17 @@ export function Flashcards() {
           className={classes.paper}
           variant="outlined"
         >
-          Dutch
-          <Divider/>
-          Translation
+          <Box
+            className={classes.content}
+          >
+            Dutch
+          </Box>
+            <Divider/>
+          <Box
+            className={classes.content}
+          >
+            Translation
+          </Box>
         </Paper>
       </Container>
     </React.Fragment>

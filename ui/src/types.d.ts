@@ -1,16 +1,24 @@
-type UserState = { username: string | null };
-
-type Flashcard = {
-    row: number;
-    word: string;
-    translation: string;
-    example: string;
-    level: number;
-    reviewed: boolean;
-    last_seen: Date
+export interface IUserState {
+  username: string | null;
 }
 
-type FlashcardsState = {
-    flashcards: Flashcard[];
-    loading: boolean;
-};
+export interface IFlashcard {
+  row: number;
+  word: string;
+  translation: string;
+  example: string;
+  level: number;
+  reviewed: boolean;
+  last_seen: Date;
+  visibility: IFlashcardVisibility;
+}
+
+export interface IFlashcardVisibility {
+  example: boolean;
+  translation: boolean;
+}
+
+export interface IFlashcardsState {
+  flashcards: IFlashcard[];
+  loading: boolean;
+}

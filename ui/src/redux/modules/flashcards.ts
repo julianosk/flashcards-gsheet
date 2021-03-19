@@ -1,14 +1,15 @@
 import { typedAction } from "../helpers";
 import { Dispatch } from 'redux';
 import { RootState } from "../index";
+import { IFlashcardsState, IFlashcard } from "../../types";
 
 // Actions
 const SET_FLASHCARDS = "flashcards/SET"
 const REVIEW_FLASHCARD = "flashcards/REVIEW"
 
-const initialState: FlashcardsState = { flashcards: [], loading: false };
+const initialState: IFlashcardsState = { flashcards: [], loading: false };
 
-const setFlashcards = (flashcards: Flashcard[]) => {
+const setFlashcards = (flashcards: IFlashcard[]) => {
   return typedAction(SET_FLASHCARDS, flashcards);
 };
 
@@ -29,6 +30,10 @@ export function loadFlashcards() {
             reviewed: false,
             last_seen: new Date(),
             translation: "Translation",
+            visibility: {
+              example: false,
+              translation: false
+            }
           },
           {
             row: 2,
@@ -38,6 +43,10 @@ export function loadFlashcards() {
             reviewed: false,
             last_seen: new Date(),
             translation: "Translation2",
+            visibility: {
+              example: false,
+              translation: false
+            }
           }
         ])
       );
@@ -50,7 +59,7 @@ type FlashcardsAction = ReturnType<typeof setFlashcards | typeof reviewFlashcard
 export function flashcardsReducer(
   state = initialState,
   action: FlashcardsAction
-): FlashcardsState {
+): IFlashcardsState {
   switch (action.type) {
     case SET_FLASHCARDS:
       return { ...state, flashcards: action.payload };
