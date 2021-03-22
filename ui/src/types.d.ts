@@ -2,23 +2,22 @@ export interface IUserState {
   username: string | null;
 }
 
-export interface IFlashcard {
+export interface IFlashcardData {
   row: number;
   word: string;
   translation: string;
   example: string;
   level: number;
-  reviewed: boolean;
   last_seen: Date;
+}
+
+export interface IFlashcard {
+  data: IFlashcardData;
+  reviewed: boolean;
   visibility: IFlashcardVisibility;
 }
 
 export interface IFlashcardVisibility {
   example: boolean;
   translation: boolean;
-}
-
-export interface IFlashcardsState {
-  flashcards: IFlashcard[];
-  loading: boolean;
 }
