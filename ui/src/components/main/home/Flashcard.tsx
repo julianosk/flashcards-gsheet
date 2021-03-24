@@ -1,5 +1,6 @@
 import { Box, Divider, makeStyles } from "@material-ui/core";
 import React from "react";
+import { IFlashcard } from "../../../types";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -8,7 +9,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Flashcard(props: any) {
+interface Props {
+  flashcard: IFlashcard;
+}
+
+export function Flashcard(props: Props) {
   const classes = useStyles();
 
   const { flashcard } = props;
