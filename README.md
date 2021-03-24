@@ -24,5 +24,6 @@ http --verbose GET http://localhost:9000/api/flashcards
 ## Todo
 
 -[ ] Configure docker container
--[ ] Follow tips
+-[ ] Follow tips (UI)
     - https://javascript.plainenglish.io/5-dry-principles-to-follow-in-react-6ca0405986a9
+    - https://itnext.io/simple-tips-for-writing-clean-react-components-c3facbf6680e
