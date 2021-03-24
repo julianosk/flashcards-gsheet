@@ -1,5 +1,8 @@
 import { Container, CssBaseline, Divider, Paper, makeStyles, Box } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux";
+import { loadFlashcards } from "../../../redux/modules/flashcards";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -23,27 +26,27 @@ const useStyles = makeStyles((theme) => ({
 
 export function Flashcards() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { flashcards } = useSelector((state: RootState) => state.flashcards)
+
+  useEffect(() => {
+    dispatch(loadFlashcards());
+  });
+
   return (
     <React.Fragment>
       <CssBaseline/>
-      <Container
-        component="main"
-        className={classes.main}
-        maxWidth="sm"
-      >
-        <Paper
-          className={classes.paper}
-          variant="outlined"
-        >
-          <Box
-            className={classes.content}
-          >
+      <Container component="main" className={classes.main} maxWidth="sm">
+        <Paper className={classes.paper} variant="outlined">
+          <Box className={classes.content}>
             Dutch
           </Box>
-            <Divider/>
-          <Box
-            className={classes.content}
-          >
+          {flashcards.map((flashcard, i) => (
+            <div>{flashcard.data.word}</div>
+          ))}
+          <Divider/>
+          <Box className={classes.content}>
             Translation
           </Box>
         </Paper>

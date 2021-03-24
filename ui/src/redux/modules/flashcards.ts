@@ -50,8 +50,7 @@ export const reviewFlashcard = (row: number, newLevel: number) => {
 };
 
 export function loadFlashcards() {
-  return (dispatch: Dispatch, getState: () => RootState) => {
-    setTimeout(() => {
+  return (dispatch: Dispatch) => {
       dispatch(
         setFlashcards([
           {
@@ -86,6 +85,5 @@ export function loadFlashcards() {
           },
         ])
       );
-    }, 500);
   };
 }
