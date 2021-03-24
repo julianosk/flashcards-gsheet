@@ -1,8 +1,9 @@
-import { Container, CssBaseline, Divider, Paper, makeStyles, Box } from "@material-ui/core";
+import { Button, Container, CssBaseline, makeStyles, Paper } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import { loadFlashcards } from "../../../redux/modules/flashcards";
+import { Flashcard } from "./Flashcard";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -18,42 +19,60 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   },
-  content: {
-    textAlign: 'center',
-    padding: theme.spacing(3),
-  }
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 export function Flashcards() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const flashcard = useSelector((state: RootState) => state.flashcards.list[state.flashcards.current])
+  const [currentCard, setCurrentCard] = React.useState(0);
+
+  const { list } = useSelector((state: RootState) => state.flashcards)
 
   useEffect(() => {
     dispatch(loadFlashcards());
-  });
+  }, [dispatch]);
+
+  const handleNext = () => {
+    setCurrentCard(currentCard + 1);
+  };
+
+  const handlePrevious = () => {
+    setCurrentCard(currentCard - 1);
+  };
+
+  const getCurrentFlashcard = () => {
+    return list[currentCard];
+  }
 
   return (
     <React.Fragment>
       <CssBaseline/>
       <Container component="main" className={classes.main} maxWidth="sm">
         <Paper className={classes.paper} variant="outlined">
-          {flashcard && (
-            <>
-              <Box className={classes.content}>
-                {flashcard.data.word}
-              </Box>
-              <Divider/>
-              <Box className={classes.content}>
-                {flashcard.data.example}
-              </Box>
-              <Divider/>
-              <Box className={classes.content}>
-                {flashcard.data.translation}
-              </Box>
-            </>
-          )}
+          <Flashcard flashcard={getCurrentFlashcard()}/>
+          <div className={classes.buttons}>
+            {currentCard !== 0 && (
+              <Button onClick={handlePrevious} className={classes.button}>
+                Back
+              </Button>
+            )}
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              className={classes.button}
+            >
+              {currentCard === list.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+          </div>
         </Paper>
       </Container>
     </React.Fragment>

@@ -50,39 +50,39 @@ export const reviewFlashcard = (row: number, newLevel: number) => {
 
 export function loadFlashcards() {
   return (dispatch: Dispatch) => {
-      dispatch(
-        setFlashcards([
-          {
-            data: {
-              row: 1,
-              word: "word1",
-              example: "Example1",
-              translation: "Translation1",
-              level: 2,
-              last_seen: new Date(),
-            },
-            reviewed: false,
-            visibility: {
-              example: false,
-              translation: false,
-            },
+    dispatch(
+      setFlashcards([
+        {
+          data: {
+            row: 1,
+            word: "word1",
+            example: "Example1",
+            translation: "Translation1",
+            level: 2,
+            last_seen: new Date(),
           },
-          {
-            data: {
-              row: 2,
-              word: "word2",
-              example: "Example2",
-              translation: "Translation2",
-              level: 2,
-              last_seen: new Date(),
-            },
-            reviewed: false,
-            visibility: {
-              example: false,
-              translation: false,
-            },
+          reviewed: false,
+          visibility: {
+            example: false,
+            translation: false,
           },
-        ])
-      );
+        },
+        {
+          data: {
+            row: 2,
+            word: "word2",
+            example: "Example2",
+            translation: "Translation2",
+            level: 2,
+            last_seen: new Date(),
+          },
+          reviewed: false,
+          visibility: {
+            example: false,
+            translation: false,
+          },
+        },
+      ])
+    );
   };
 }
