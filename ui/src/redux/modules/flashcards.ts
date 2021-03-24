@@ -1,17 +1,16 @@
 import { typedAction } from "../helpers";
 import { Dispatch, AnyAction } from 'redux';
-import { RootState } from "../index";
 import { IFlashcard } from "../../types";
 
-// Actions
 export const ACTION_TYPES = {
   SET_FLASHCARDS: "flashcards/SET",
   REVIEW_FLASHCARD: "flashcards/REVIEW",
 }
 
 const initialState = {
-  flashcards: [] as IFlashcard[],
-  loading: false
+  list: [] as IFlashcard[],
+  loading: false,
+  current: 0,
 };
 
 export type IFlashcardsState = Readonly<typeof initialState>
@@ -24,12 +23,12 @@ export function flashcardsReducer(
     case ACTION_TYPES.SET_FLASHCARDS:
       return {
         ...state,
-        flashcards: action.payload
+        list: action.payload
       };
     case ACTION_TYPES.REVIEW_FLASHCARD:
       return {
         ...state,
-        flashcards: state.flashcards.map(flashcard => {
+        list: state.list.map(flashcard => {
           if (flashcard.data.row === action.payload.data.row) {
             return { ...flashcard, level: action.payload.newLevel, reviewed: true };
           }
@@ -57,8 +56,8 @@ export function loadFlashcards() {
             data: {
               row: 1,
               word: "word1",
-              example: "Example",
-              translation: "Translation",
+              example: "Example1",
+              translation: "Translation1",
               level: 2,
               last_seen: new Date(),
             },

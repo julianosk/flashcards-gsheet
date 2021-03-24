@@ -28,7 +28,7 @@ export function Flashcards() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { flashcards } = useSelector((state: RootState) => state.flashcards)
+  const flashcard = useSelector((state: RootState) => state.flashcards.list[state.flashcards.current])
 
   useEffect(() => {
     dispatch(loadFlashcards());
@@ -39,16 +39,21 @@ export function Flashcards() {
       <CssBaseline/>
       <Container component="main" className={classes.main} maxWidth="sm">
         <Paper className={classes.paper} variant="outlined">
-          <Box className={classes.content}>
-            Dutch
-          </Box>
-          {flashcards.map((flashcard, i) => (
-            <div>{flashcard.data.word}</div>
-          ))}
-          <Divider/>
-          <Box className={classes.content}>
-            Translation
-          </Box>
+          {flashcard && (
+            <>
+              <Box className={classes.content}>
+                {flashcard.data.word}
+              </Box>
+              <Divider/>
+              <Box className={classes.content}>
+                {flashcard.data.example}
+              </Box>
+              <Divider/>
+              <Box className={classes.content}>
+                {flashcard.data.translation}
+              </Box>
+            </>
+          )}
         </Paper>
       </Container>
     </React.Fragment>
