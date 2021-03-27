@@ -1,6 +1,7 @@
 import { typedAction } from "../helpers";
-import { Dispatch, AnyAction } from 'redux';
-import { IFlashcard } from "../../types";
+import { AnyAction, Dispatch } from 'redux';
+import { IFlashcard, IFlashcardData } from "../../types";
+import axios from "axios";
 
 export const ACTION_TYPES = {
   SET_FLASHCARDS: "flashcards/SET",
@@ -40,6 +41,9 @@ export function flashcardsReducer(
   }
 }
 
+// Actions
+const apiUrl = 'api/flashcards';
+
 const setFlashcards = (flashcards: IFlashcard[]) => {
   return typedAction(ACTION_TYPES.SET_FLASHCARDS, flashcards);
 };
@@ -49,40 +53,23 @@ export const reviewFlashcard = (row: number, newLevel: number) => {
 };
 
 export function loadFlashcards() {
-  return (dispatch: Dispatch) => {
-    dispatch(
-      setFlashcards([
-        {
-          data: {
-            row: 1,
-            word: "word1",
-            example: "Example1",
-            translation: "Translation1",
-            level: 2,
-            last_seen: new Date(),
-          },
-          reviewed: false,
-          visibility: {
-            example: false,
-            translation: false,
-          },
-        },
-        {
-          data: {
-            row: 2,
-            word: "word2",
-            example: "Example2",
-            translation: "Translation2",
-            level: 2,
-            last_seen: new Date(),
-          },
-          reviewed: false,
-          visibility: {
-            example: false,
-            translation: false,
-          },
-        },
-      ])
-    );
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`${apiUrl}`);
+      dispatch(setFlashcards(
+        response.data.map((data: IFlashcardData) => {
+            return <IFlashcard>{
+              data: data,
+              reviewed: false,
+              visibility: {
+                example: false,
+                translation: false,
+              }
+            }
+          }
+        )));
+    } catch (err) {
+      console.error(err);
+    }
   };
 }
